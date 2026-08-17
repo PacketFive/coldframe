@@ -1,0 +1,20 @@
+"""{{ description }}"""
+
+from __future__ import annotations
+
+__version__ = "0.1.0"
+
+__all__ = ["__version__", "greet"]
+
+
+def greet(name: str) -> str:
+    """Return a greeting for *name*.
+
+    Placeholder so the project has something to import, test and type check from
+    the first commit. A scaffold whose gates pass over an empty package proves
+    nothing; this gives every gate real code to look at.
+    """
+    cleaned = name.strip()
+    if not cleaned:
+        raise ValueError("name must not be empty")
+    return f"Hello, {cleaned}."

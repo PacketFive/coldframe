@@ -1,0 +1,25 @@
+"""Tests for the {{ package }} package."""
+
+from __future__ import annotations
+
+import pytest
+
+from {{ package }} import __version__, greet
+
+
+def test_greet_uses_the_given_name() -> None:
+    assert greet("Ada") == "Hello, Ada."
+
+
+def test_greet_trims_surrounding_whitespace() -> None:
+    assert greet("  Ada  ") == "Hello, Ada."
+
+
+@pytest.mark.parametrize("value", ["", "   "])
+def test_greet_rejects_an_empty_name(value: str) -> None:
+    with pytest.raises(ValueError, match="must not be empty"):
+        greet(value)
+
+
+def test_version_is_exposed() -> None:
+    assert __version__

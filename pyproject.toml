@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybootstrap"
+version = "0.1.0"
+description = "Project scaffolding and quality gates that run the same way locally and in CI."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["scaffolding", "quality", "ci", "lint", "junit"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Quality Assurance",
+]
+
+# No runtime dependencies, on purpose. pybootstrap is installed into the
+# environment of the project it is checking, often before that project has any
+# dependencies of its own. A bootstrapper that first needs its own dependency
+# tree resolved is arguing against its own premise.
+#
+# tomli is the single exception, and only on Python 3.10, where tomllib is not
+# yet in the standard library.
+dependencies = ["tomli>=2.0; python_version < '3.11'"]
+
+[[project.authors]]
+name = "Weqaar Janjua"
+email = "weqaar.janjua@packetfive.com"
+
+[project.optional-dependencies]
+# The tools the gates drive. Optional because a project may already pin its own
+# versions, and pybootstrap must not fight it for them.
+gates = [
+  "ruff>=0.4",
+  "pyright>=1.1",
+  "pytest>=8",
+  "pytest-cov>=5",
+]
+dev = [
+  "ruff>=0.4",
+  "pyright>=1.1",
+  "pytest>=8",
+  "pytest-cov>=5",
+]
+
+[project.scripts]
+pybootstrap = "pybootstrap.cli:main"
+
+[project.urls]
+Source = "https://github.com/packetfive/pybootstrap"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+# The scaffold templates ship inside the wheel. Without this they are missing
+# from an installed copy and 'pybootstrap new' fails only for real users, never
+# in a source checkout, which is the worst place for a bug to hide.
+pybootstrap = ["templates/**/*"]
+
+# ---------------------------------------------------------------------------
+# pybootstrap checks itself with its own gates.
+# ---------------------------------------------------------------------------
+[tool.pybootstrap]
+gates = ["format", "lint", "typecheck", "test"]
+coverage-min = 80
+coverage-package = "pybootstrap"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+# Template files are rendered, not imported. They contain {{ placeholders }}
+# that are not valid Python until substitution, so linting them is meaningless.
+exclude = ["src/pybootstrap/templates"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert on behaviour, run subprocesses against fixtures they created,
+# and parse XML this project wrote moments earlier. The security rules that
+# flag those describe risks that do not exist inside the suite.
+"tests/*" = ["S101", "S603", "S607", "S314"]
+
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
+include = ["src", "tests"]
+exclude = ["src/pybootstrap/templates"]
+reportMissingImports = "error"
+reportMissingTypeStubs = "none"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "--cov-report=term-missing --import-mode=importlib"

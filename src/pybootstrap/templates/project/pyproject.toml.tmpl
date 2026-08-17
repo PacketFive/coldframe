@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ name }}"
+version = "0.1.0"
+description = "{{ description }}"
+readme = "README.md"
+requires-python = ">={{ python_version }}"
+authors = [{ name = "{{ author }}", email = "{{ email }}" }]
+dependencies = []
+
+[project.optional-dependencies]
+# Everything the quality gates need. One command installs a working dev setup:
+#   pip install -e ".[dev]"
+dev = [
+  "pybootstrap",
+  "ruff>=0.4",
+  "pyright>=1.1",
+  "pytest>=8",
+  "pytest-cov>=5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ---------------------------------------------------------------------------
+# Quality gates.
+#
+# This table says which checks make up "done" for this project. It does not
+# restate anything the tools below already know: sources, line length and test
+# paths are read from their own tables. One fact, one place.
+# ---------------------------------------------------------------------------
+[tool.pybootstrap]
+gates = [{{ gates }}]
+coverage-min = {{ coverage_min }}
+coverage-package = "{{ package }}"
+
+# ---------------------------------------------------------------------------
+# Standard tool configuration. Each tool stays usable on its own:
+#   ruff check src tests
+#   pyright src tests
+#   pytest
+# behave identically whether or not pybootstrap is involved.
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = {{ line_length }}
+target-version = "{{ python_target }}"
+# Tells the import sorter that {{ package }} is this project rather than a
+# third-party package. Without it a src layout has first-party imports grouped
+# with the dependencies, and the lint gate reports a sorting error on a file
+# nobody has touched.
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# E and F are the pyflakes and pycodestyle core, I keeps imports sorted, UP
+# rewrites syntax that a newer Python made obsolete.
+select = ["E", "F", "I", "UP"]
+
+[tool.pyright]
+pythonVersion = "{{ python_version }}"
+typeCheckingMode = "basic"
+include = ["src", "tests"]
+reportMissingImports = "error"
+reportMissingTypeStubs = "none"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# pythonpath lets the suite run straight after 'git clone', before anyone has
+# installed the project. Without it a src layout gives ModuleNotFoundError on a
+# fresh checkout, which reads as a broken project rather than a missing step.
+pythonpath = ["src"]
+addopts = "--cov-report=term-missing --import-mode=importlib"

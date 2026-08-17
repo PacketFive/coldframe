@@ -1,0 +1,36 @@
+name: Codebase Quality and Compliance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gates:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "{{ python_version }}"
+
+      - name: Install the project and its dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      # `--format github` emits workflow annotations, so findings appear inline
+      # on the changed lines in the pull request rather than only in the log.
+      - name: Run pybootstrap check
+        run: pybootstrap check --junit-dir .quality --format github
+
+      # runs even when the gates failed, which is when the report matters most
+      - name: Publish gate results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-results
+          path: .quality/junit-*.xml
