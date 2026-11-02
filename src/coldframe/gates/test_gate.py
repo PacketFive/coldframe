@@ -30,9 +30,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from pybootstrap.config import Config
-from pybootstrap.gates.base import Completed, missing_tool, run_tool, skipped
-from pybootstrap.model import Finding, GateResult, Outcome
+from coldframe.config import Config
+from coldframe.gates.base import Completed, missing_tool, run_tool, skipped
+from coldframe.model import Finding, GateResult, Outcome
 
 PYTEST_INSTALL_HINT = "pip install pytest"
 
@@ -56,7 +56,7 @@ class TestGate:
                 f"no test directory found (looked for {', '.join(config.test_dirs)})",
             )
 
-        with TemporaryDirectory(prefix="pybootstrap-") as tmp:
+        with TemporaryDirectory(prefix="coldframe-") as tmp:
             report = Path(tmp) / "pytest.xml"
             argv = ["pytest", f"--junitxml={report}"]
             if config.coverage_min is not None:

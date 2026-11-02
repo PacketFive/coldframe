@@ -24,8 +24,8 @@ jobs:
 
       # `--format github` emits workflow annotations, so findings appear inline
       # on the changed lines in the pull request rather than only in the log.
-      - name: Run pybootstrap check
-        run: pybootstrap check --junit-dir .quality --format github
+      - name: Run coldframe check
+        run: coldframe check --junit-dir .quality --format github
 
       # runs even when the gates failed, which is when the report matters most
       - name: Publish gate results

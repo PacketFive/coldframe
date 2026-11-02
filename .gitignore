@@ -11,4 +11,4 @@ dist/
 coverage.xml
 htmlcov/
 .quality/
-.pybootstrap/
+.coldframe/

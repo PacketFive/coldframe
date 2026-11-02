@@ -15,7 +15,7 @@ dependencies = []
 # Everything the quality gates need. One command installs a working dev setup:
 #   pip install -e ".[dev]"
 dev = [
-  "pybootstrap",
+  "coldframe",
   "ruff>=0.4",
   "pyright>=1.1",
   "pytest>=8",
@@ -32,7 +32,7 @@ where = ["src"]
 # restate anything the tools below already know: sources, line length and test
 # paths are read from their own tables. One fact, one place.
 # ---------------------------------------------------------------------------
-[tool.pybootstrap]
+[tool.coldframe]
 gates = [{{ gates }}]
 coverage-min = {{ coverage_min }}
 coverage-package = "{{ package }}"
@@ -42,7 +42,7 @@ coverage-package = "{{ package }}"
 #   ruff check src tests
 #   pyright src tests
 #   pytest
-# behave identically whether or not pybootstrap is involved.
+# behave identically whether or not coldframe is involved.
 # ---------------------------------------------------------------------------
 [tool.ruff]
 line-length = {{ line_length }}

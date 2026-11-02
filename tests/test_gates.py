@@ -12,13 +12,13 @@ import json
 
 import pytest
 
-from pybootstrap.gates.audit_gate import AuditGate
-from pybootstrap.gates.base import Completed
-from pybootstrap.gates.format_gate import FormatGate
-from pybootstrap.gates.lint_gate import LintGate
-from pybootstrap.gates.test_gate import TestGate
-from pybootstrap.gates.typecheck_gate import TypeCheckGate
-from pybootstrap.model import Outcome
+from coldframe.gates.audit_gate import AuditGate
+from coldframe.gates.base import Completed
+from coldframe.gates.format_gate import FormatGate
+from coldframe.gates.lint_gate import LintGate
+from coldframe.gates.test_gate import TestGate
+from coldframe.gates.typecheck_gate import TypeCheckGate
+from coldframe.model import Outcome
 
 
 def completed(returncode: int, stdout: str = "", stderr: str = "", launched: bool = True):

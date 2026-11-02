@@ -19,7 +19,7 @@ import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from pybootstrap.model import GateResult, Outcome, RunReport
+from coldframe.model import GateResult, Outcome, RunReport
 
 MAX_MESSAGE = 200
 """JUnit message attributes are shown in a table cell; keep them short."""
@@ -30,7 +30,7 @@ def _testcase(classname: str, name: str) -> ET.Element:
 
 
 def _suite_for(result: GateResult, prefix: str) -> ET.Element:
-    classname = f"pybootstrap.{result.name}"
+    classname = f"coldframe.{result.name}"
     cases: list[ET.Element] = []
 
     if result.outcome is Outcome.ERRORED:

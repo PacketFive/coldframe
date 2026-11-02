@@ -14,10 +14,10 @@ from pathlib import Path
 
 import pytest
 
-from pybootstrap import cli, gates, report, runner
-from pybootstrap.config import Config
-from pybootstrap.gates.base import Gate
-from pybootstrap.model import Finding, GateResult, Outcome, RunReport
+from coldframe import cli, gates, report, runner
+from coldframe.config import Config
+from coldframe.gates.base import Gate
+from coldframe.model import Finding, GateResult, Outcome, RunReport
 
 
 class StubGate:
@@ -202,7 +202,7 @@ class TestCli:
 
     def test_info_shows_what_would_run(self, tmp_path, capsys) -> None:
         (tmp_path / "pyproject.toml").write_text(
-            '[project]\nname = "demo"\n[tool.pybootstrap]\ngates = ["lint"]\n', encoding="utf-8"
+            '[project]\nname = "demo"\n[tool.coldframe]\ngates = ["lint"]\n', encoding="utf-8"
         )
         assert cli.main(["info", "-C", str(tmp_path)]) == 0
         out = capsys.readouterr().out
@@ -213,7 +213,7 @@ class TestCli:
         """The most likely first mistake, so the message has to point somewhere."""
         code = cli.main(["info", "-C", str(tmp_path)])
         assert code == 2
-        assert "pybootstrap new" in capsys.readouterr().err
+        assert "coldframe new" in capsys.readouterr().err
 
     def test_check_exit_code_follows_the_worst_outcome(self, tmp_path, monkeypatch) -> None:
         (tmp_path / "pyproject.toml").write_text('[project]\nname = "demo"\n', encoding="utf-8")
@@ -252,7 +252,7 @@ class TestCli:
         capsys.readouterr()
 
         completed = subprocess.run(
-            [sys.executable, "-m", "pybootstrap", "check"],
+            [sys.executable, "-m", "coldframe", "check"],
             cwd=tmp_path / "lab-demo",
             capture_output=True,
             text=True,

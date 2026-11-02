@@ -1,4 +1,4 @@
-# pybootstrap
+# coldframe
 
 Orientation for anyone, human or AI, picking this repository up. Read this
 before changing anything; most of what follows was learned by getting it wrong
@@ -22,7 +22,7 @@ are checked with it. Breaking a gate here breaks thirty projects there, so run
 ## State, as of the last session
 
 Complete and self-checking. 120 tests pass, the four configured gates are green
-on the tool itself, and `pybootstrap new` produces a project that passes its own
+on the tool itself, and `coldframe new` produces a project that passes its own
 gates immediately with no edits.
 
 Nothing has been committed. The repository has one empty history and every file
@@ -43,7 +43,7 @@ policy below explains why it was not used.
 
 ```bash
 pip install -e ".[dev]"
-pybootstrap check          # the acceptance test
+coldframe check          # the acceptance test
 ```
 
 The tool checks itself with its own gates. That is deliberate and it is the only
@@ -51,7 +51,7 @@ acceptance test that matters: a quality tool that cannot pass its own bar has
 nothing to say. Expect exit 0 and four gates reported: format, lint, typecheck
 and test. The audit gate exists and is opt in, because it needs the network to
 fetch an advisory database and a gate that only works when the network is up
-fails on a laptop with no connection. `pybootstrap gates` lists all five.
+fails on a laptop with no connection. `coldframe gates` lists all five.
 
 The individual tools still work on their own, which is the point of the design:
 
@@ -66,8 +66,8 @@ If you changed anything in `scaffold.py` or under `templates/`, the real check i
 that a generated project is green without being touched:
 
 ```bash
-cd /tmp && pybootstrap new demo-project --no-git --ci none
-cd demo-project && pybootstrap check
+cd /tmp && coldframe new demo-project --no-git --ci none
+cd demo-project && coldframe check
 ```
 
 That path has failed before, in exactly the way that is hardest to notice: the
@@ -76,7 +76,7 @@ tool's own gates were green while every project it produced was broken.
 ## Layout
 
 ```
-src/pybootstrap/
+src/coldframe/
   model.py          Outcome, Finding, GateResult, RunReport, exit-code policy
   config.py         reads pyproject.toml, infers settings from the tools' own tables
   runner.py         runs the gates, never stops early
@@ -113,7 +113,7 @@ it is the whole design, and everything else follows from it.
   requirement, not a preference, and it rules out the Buck2 and Bazel shape.
 - **Infer rather than require.** Line length comes from `[tool.ruff]`, coverage
   settings from the pytest table. A project that already configured its tools
-  should not have to say the same thing again under `[tool.pybootstrap]`.
+  should not have to say the same thing again under `[tool.coldframe]`.
 - **Standard library only.** argparse rather than typer, string substitution
   rather than Jinja2. The tool installs into environments that have nothing else
   yet, so a bootstrapper with its own dependency tree argues against its premise.
@@ -164,7 +164,7 @@ In rough order of value:
 2. The GitHub Actions template has never run on GitHub. It is written by
    analogy with the Azure one and should be assumed untested.
 3. There is no `--fix` coverage for the typecheck or test gates, which is
-   correct, but `pybootstrap fix` does not say so clearly when asked for them.
+   correct, but `coldframe fix` does not say so clearly when asked for them.
 4. Gates are discovered from a fixed table in `gates/__init__.py`. A plugin
    entry point would let a project add one without changing this repository.
 5. Nothing is published. If it is ever to be installed by name rather than by

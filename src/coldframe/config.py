@@ -5,15 +5,15 @@ ask a project to maintain a parallel description of itself: a ``BUILD`` file per
 package listing sources and dependencies that the language ecosystem already
 knows about. That second description then drifts from the first.
 
-pybootstrap keeps one description. Dependencies live where pip and Poetry
+coldframe keeps one description. Dependencies live where pip and Poetry
 already look, ``[project]`` or ``[tool.poetry]``. Gate settings live in
-``[tool.pybootstrap]``. Each tool keeps its own ``[tool.ruff]``,
+``[tool.coldframe]``. Each tool keeps its own ``[tool.ruff]``,
 ``[tool.pyright]`` and ``[tool.pytest.ini_options]`` table, untouched, so every
 tool stays usable directly. Running ``ruff check src`` by hand must behave
-exactly as it does under ``pybootstrap check``, or the wrapper has started
+exactly as it does under ``coldframe check``, or the wrapper has started
 lying.
 
-What ``[tool.pybootstrap]`` adds is only the part the tools cannot know: which
+What ``[tool.coldframe]`` adds is only the part the tools cannot know: which
 gates make up this project's definition of done.
 """
 
@@ -31,7 +31,7 @@ else:  # pragma: no cover - exercised only on 3.10
         import tomli as tomllib  # type: ignore[no-redef]
     except ModuleNotFoundError as exc:  # pragma: no cover
         raise SystemExit(
-            "pybootstrap needs TOML parsing. On Python 3.10 install tomli, or run on 3.11+."
+            "coldframe needs TOML parsing. On Python 3.10 install tomli, or run on 3.11+."
         ) from exc
 
 
@@ -88,7 +88,7 @@ class Config:
 def find_project_root(start: Path | None = None) -> Path | None:
     """Walk upwards from *start* looking for pyproject.toml.
 
-    Mirrors how git, ruff and pytest find their own roots, so ``pybootstrap
+    Mirrors how git, ruff and pytest find their own roots, so ``coldframe
     check`` behaves the same from a subdirectory as from the top.
     """
     current = (start or Path.cwd()).resolve()
@@ -103,13 +103,13 @@ def _as_str_list(value: Any, key: str) -> list[str]:
         return [value]
     if isinstance(value, list) and all(isinstance(v, str) for v in value):
         return list(value)
-    raise ConfigError(f"[tool.pybootstrap] {key} must be a string or a list of strings")
+    raise ConfigError(f"[tool.coldframe] {key} must be a string or a list of strings")
 
 
 def load(root: Path | None = None) -> Config:
     """Read configuration for the project rooted at *root*.
 
-    A project with no ``[tool.pybootstrap]`` table gets working defaults. That
+    A project with no ``[tool.coldframe]`` table gets working defaults. That
     matters for adoption: pointing the tool at an existing repository should
     produce a useful answer before anyone edits anything.
     """
@@ -117,7 +117,7 @@ def load(root: Path | None = None) -> Config:
     if resolved is None:
         raise ConfigError(
             "No pyproject.toml found here or in any parent directory. "
-            "pybootstrap works on a Python project; run 'pybootstrap new' to create one."
+            "coldframe works on a Python project; run 'coldframe new' to create one."
         )
 
     pyproject = resolved / "pyproject.toml"
@@ -126,7 +126,7 @@ def load(root: Path | None = None) -> Config:
         # search that ran out of parents, and the message should say which.
         raise ConfigError(
             f"No pyproject.toml in {resolved}. "
-            "pybootstrap works on a Python project; run 'pybootstrap new' to create one."
+            "coldframe works on a Python project; run 'coldframe new' to create one."
         )
     try:
         with pyproject.open("rb") as handle:
@@ -210,12 +210,12 @@ def _apply_inferred(cfg: Config, data: dict[str, Any]) -> None:
 
 
 def _apply_explicit(cfg: Config, data: dict[str, Any]) -> None:
-    """Apply ``[tool.pybootstrap]``, which wins over anything inferred."""
-    table = data.get("tool", {}).get("pybootstrap")
+    """Apply ``[tool.coldframe]``, which wins over anything inferred."""
+    table = data.get("tool", {}).get("coldframe")
     if table is None:
         return
     if not isinstance(table, dict):
-        raise ConfigError("[tool.pybootstrap] must be a table")
+        raise ConfigError("[tool.coldframe] must be a table")
 
     if "source" in table:
         cfg.source_dirs = _as_str_list(table["source"], "source")
@@ -226,19 +226,19 @@ def _apply_explicit(cfg: Config, data: dict[str, Any]) -> None:
     if "suite-prefix" in table:
         prefix = table["suite-prefix"]
         if not isinstance(prefix, str):
-            raise ConfigError("[tool.pybootstrap] suite-prefix must be a string")
+            raise ConfigError("[tool.coldframe] suite-prefix must be a string")
         cfg.suite_prefix = prefix
     if "coverage-min" in table:
         value = table["coverage-min"]
         if not isinstance(value, int | float) or isinstance(value, bool):
-            raise ConfigError("[tool.pybootstrap] coverage-min must be a number")
+            raise ConfigError("[tool.coldframe] coverage-min must be a number")
         if not 0 <= float(value) <= 100:
-            raise ConfigError("[tool.pybootstrap] coverage-min must be between 0 and 100")
+            raise ConfigError("[tool.coldframe] coverage-min must be between 0 and 100")
         cfg.coverage_min = float(value)
     if "coverage-package" in table:
         package = table["coverage-package"]
         if not isinstance(package, str):
-            raise ConfigError("[tool.pybootstrap] coverage-package must be a string")
+            raise ConfigError("[tool.coldframe] coverage-package must be a string")
         cfg.coverage_package = package
 
     for key, value in table.items():

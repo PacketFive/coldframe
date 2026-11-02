@@ -11,7 +11,7 @@ import os
 import sys
 from typing import TextIO
 
-from pybootstrap.model import GateResult, Outcome, RunReport
+from coldframe.model import GateResult, Outcome, RunReport
 
 _MARKS = {
     Outcome.PASSED: "PASS",
@@ -34,7 +34,7 @@ MAX_FINDINGS_SHOWN = 20
 def use_colour(stream: TextIO) -> bool:
     if os.environ.get("NO_COLOR"):
         return False
-    if os.environ.get("PYBOOTSTRAP_FORCE_COLOR"):
+    if os.environ.get("COLDFRAME_FORCE_COLOR"):
         return True
     return hasattr(stream, "isatty") and stream.isatty()
 

@@ -1,6 +1,6 @@
 """Command line interface.
 
-Built on argparse rather than a CLI framework. pybootstrap installs into the
+Built on argparse rather than a CLI framework. coldframe installs into the
 environment of every project that uses it, including the moment before that
 project has any dependencies at all, so the tool needs to work from the standard
 library alone. A bootstrapper that first requires its own dependency tree is
@@ -15,12 +15,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pybootstrap import __version__, gates, junit, report, runner
-from pybootstrap.config import Config, ConfigError, load
-from pybootstrap.model import GateResult, Outcome
-from pybootstrap.scaffold import CI_SYSTEMS, ProjectSpec, ScaffoldError, generate
+from coldframe import __version__, gates, junit, report, runner
+from coldframe.config import Config, ConfigError, load
+from coldframe.model import GateResult, Outcome
+from coldframe.scaffold import CI_SYSTEMS, ProjectSpec, ScaffoldError, generate
 
-PROGRAM = "pybootstrap"
+PROGRAM = "coldframe"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -199,7 +199,7 @@ def cmd_fix(args: argparse.Namespace) -> int:
         # rather than a failure of the fix command itself.
         if completed.returncode > 1:
             worst = 2
-    print("\nFixed what could be fixed automatically. Run 'pybootstrap check' to see the rest.")
+    print("\nFixed what could be fixed automatically. Run 'coldframe check' to see the rest.")
     return worst
 
 
@@ -237,7 +237,7 @@ def cmd_new(args: argparse.Namespace) -> int:
         )
         print("  initialised a git repository")
 
-    print("\nNext:\n" f"  cd {destination}\n" '  pip install -e ".[dev]"\n' "  pybootstrap check")
+    print("\nNext:\n" f"  cd {destination}\n" '  pip install -e ".[dev]"\n' "  coldframe check")
     return 0
 
 
@@ -289,7 +289,7 @@ def main(argv: list[str] | None = None) -> int:
     if not getattr(args, "command", None):
         parser.print_help()
         # Exit 2, the shell convention for a usage error. Returning 0 would let
-        # a mistyped CI step, 'pybootstrap' with the subcommand dropped, report
+        # a mistyped CI step, 'coldframe' with the subcommand dropped, report
         # success having checked nothing, which is the failure this tool exists
         # to make impossible.
         return 2

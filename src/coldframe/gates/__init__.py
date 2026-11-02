@@ -1,17 +1,17 @@
 """Gate registry.
 
 Adding a gate means writing the class and adding one entry here. Projects then
-enable it by name in ``[tool.pybootstrap] gates``.
+enable it by name in ``[tool.coldframe] gates``.
 """
 
 from __future__ import annotations
 
-from pybootstrap.gates.audit_gate import AuditGate
-from pybootstrap.gates.base import Gate, errored
-from pybootstrap.gates.format_gate import FormatGate
-from pybootstrap.gates.lint_gate import LintGate
-from pybootstrap.gates.test_gate import TestGate
-from pybootstrap.gates.typecheck_gate import TypeCheckGate
+from coldframe.gates.audit_gate import AuditGate
+from coldframe.gates.base import Gate, errored
+from coldframe.gates.format_gate import FormatGate
+from coldframe.gates.lint_gate import LintGate
+from coldframe.gates.test_gate import TestGate
+from coldframe.gates.typecheck_gate import TypeCheckGate
 
 REGISTRY: dict[str, type] = {
     "format": FormatGate,

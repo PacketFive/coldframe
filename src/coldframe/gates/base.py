@@ -8,8 +8,8 @@ import time
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
-from pybootstrap.config import Config
-from pybootstrap.model import GateResult, Outcome
+from coldframe.config import Config
+from coldframe.model import GateResult, Outcome
 
 
 @dataclass

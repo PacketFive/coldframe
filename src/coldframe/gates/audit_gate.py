@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import json
 
-from pybootstrap.config import Config
-from pybootstrap.gates.base import Completed, missing_tool, run_tool
-from pybootstrap.model import Finding, GateResult, Outcome
+from coldframe.config import Config
+from coldframe.gates.base import Completed, missing_tool, run_tool
+from coldframe.model import Finding, GateResult, Outcome
 
 PIP_AUDIT_INSTALL_HINT = "pip install pip-audit"
 

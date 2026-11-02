@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pybootstrap"
+name = "coldframe"
 version = "0.1.0"
 description = "Project scaffolding and quality gates that run the same way locally and in CI."
 readme = "README.md"
@@ -17,7 +17,7 @@ classifiers = [
   "Topic :: Software Development :: Quality Assurance",
 ]
 
-# No runtime dependencies, on purpose. pybootstrap is installed into the
+# No runtime dependencies, on purpose. coldframe is installed into the
 # environment of the project it is checking, often before that project has any
 # dependencies of its own. A bootstrapper that first needs its own dependency
 # tree resolved is arguing against its own premise.
@@ -32,7 +32,7 @@ email = "weqaar.janjua@packetfive.com"
 
 [project.optional-dependencies]
 # The tools the gates drive. Optional because a project may already pin its own
-# versions, and pybootstrap must not fight it for them.
+# versions, and coldframe must not fight it for them.
 gates = [
   "ruff>=0.4",
   "pyright>=1.1",
@@ -47,27 +47,29 @@ dev = [
 ]
 
 [project.scripts]
-pybootstrap = "pybootstrap.cli:main"
+coldframe = "coldframe.cli:main"
+# Former name, kept so commands printed in the book still work.
+pybootstrap = "coldframe.cli:main"
 
 [project.urls]
-Source = "https://github.com/packetfive/pybootstrap"
+Source = "https://github.com/packetfive/coldframe"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 # The scaffold templates ship inside the wheel. Without this they are missing
-# from an installed copy and 'pybootstrap new' fails only for real users, never
+# from an installed copy and 'coldframe new' fails only for real users, never
 # in a source checkout, which is the worst place for a bug to hide.
-pybootstrap = ["templates/**/*"]
+coldframe = ["templates/**/*"]
 
 # ---------------------------------------------------------------------------
-# pybootstrap checks itself with its own gates.
+# coldframe checks itself with its own gates.
 # ---------------------------------------------------------------------------
-[tool.pybootstrap]
+[tool.coldframe]
 gates = ["format", "lint", "typecheck", "test"]
 coverage-min = 80
-coverage-package = "pybootstrap"
+coverage-package = "coldframe"
 
 [tool.ruff]
 line-length = 100
@@ -75,7 +77,7 @@ target-version = "py310"
 src = ["src", "tests"]
 # Template files are rendered, not imported. They contain {{ placeholders }}
 # that are not valid Python until substitution, so linting them is meaningless.
-exclude = ["src/pybootstrap/templates"]
+exclude = ["src/coldframe/templates"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]
@@ -90,7 +92,7 @@ select = ["E", "F", "I", "UP", "B", "S"]
 pythonVersion = "3.10"
 typeCheckingMode = "basic"
 include = ["src", "tests"]
-exclude = ["src/pybootstrap/templates"]
+exclude = ["src/coldframe/templates"]
 reportMissingImports = "error"
 reportMissingTypeStubs = "none"
 

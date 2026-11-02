@@ -19,9 +19,9 @@ and it is not a checker that failed either.
 
 from __future__ import annotations
 
-from pybootstrap.config import Config
-from pybootstrap.gates.base import Completed, missing_tool, run_tool, skipped
-from pybootstrap.model import Finding, GateResult, Outcome
+from coldframe.config import Config
+from coldframe.gates.base import Completed, missing_tool, run_tool, skipped
+from coldframe.model import Finding, GateResult, Outcome
 
 RUFF_INSTALL_HINT = "pip install ruff"
 

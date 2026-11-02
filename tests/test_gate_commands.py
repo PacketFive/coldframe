@@ -15,9 +15,9 @@ from pathlib import Path
 
 import pytest
 
-from pybootstrap.config import Config
-from pybootstrap.gates import audit_gate, base, format_gate, lint_gate, test_gate, typecheck_gate
-from pybootstrap.model import Outcome
+from coldframe.config import Config
+from coldframe.gates import audit_gate, base, format_gate, lint_gate, test_gate, typecheck_gate
+from coldframe.model import Outcome
 
 
 @pytest.fixture

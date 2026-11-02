@@ -14,7 +14,7 @@ import sys
 
 import pytest
 
-from pybootstrap.scaffold import ProjectSpec, ScaffoldError, generate
+from coldframe.scaffold import ProjectSpec, ScaffoldError, generate
 
 
 class TestProjectSpec:
@@ -133,7 +133,7 @@ class TestGenerate:
         assert result.returncode == 0, result.stdout + result.stderr
 
     def test_the_generated_pyproject_is_valid_toml(self, tmp_path) -> None:
-        from pybootstrap.config import tomllib
+        from coldframe.config import tomllib
 
         root = tmp_path / "demo-app"
         generate(ProjectSpec("demo-app"), root)
@@ -141,7 +141,7 @@ class TestGenerate:
             data = tomllib.load(handle)
 
         assert data["project"]["name"] == "demo-app"
-        assert "pybootstrap" in data["tool"]
+        assert "coldframe" in data["tool"]
 
     def test_an_existing_directory_is_not_overwritten(self, tmp_path) -> None:
         root = tmp_path / "demo-app"

@@ -6,9 +6,9 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from pybootstrap import junit
-from pybootstrap.config import DEFAULT_GATES, ConfigError, find_project_root, load
-from pybootstrap.model import Finding, GateResult, Outcome, RunReport
+from coldframe import junit
+from coldframe.config import DEFAULT_GATES, ConfigError, find_project_root, load
+from coldframe.model import Finding, GateResult, Outcome, RunReport
 
 
 def suite_of(root: ET.Element) -> ET.Element:
@@ -29,7 +29,7 @@ def write_project(tmp_path, body: str):
 
 
 class TestConfig:
-    def test_defaults_apply_without_a_pybootstrap_table(self, tmp_path) -> None:
+    def test_defaults_apply_without_a_coldframe_table(self, tmp_path) -> None:
         """An untouched project must still produce a useful answer.
 
         Requiring configuration before the tool says anything is the difference
@@ -64,7 +64,7 @@ class TestConfig:
             tmp_path,
             '[project]\nname = "demo"\n'
             '[tool.pytest.ini_options]\ntestpaths = ["spec"]\n'
-            '[tool.pybootstrap]\ntests = ["t"]\ngates = ["lint"]\ncoverage-min = 95\n',
+            '[tool.coldframe]\ntests = ["t"]\ngates = ["lint"]\ncoverage-min = 95\n',
         )
         config = load(root)
         assert config.test_dirs == ["t"]
@@ -87,9 +87,9 @@ class TestConfig:
     @pytest.mark.parametrize(
         "body, message",
         [
-            ('[tool.pybootstrap]\ncoverage-min = "high"\n', "must be a number"),
-            ("[tool.pybootstrap]\ncoverage-min = 150\n", "between 0 and 100"),
-            ("[tool.pybootstrap]\ngates = 3\n", "list of strings"),
+            ('[tool.coldframe]\ncoverage-min = "high"\n', "must be a number"),
+            ("[tool.coldframe]\ncoverage-min = 150\n", "between 0 and 100"),
+            ("[tool.coldframe]\ngates = 3\n", "list of strings"),
         ],
     )
     def test_contradictory_settings_are_rejected(self, tmp_path, body: str, message: str) -> None:

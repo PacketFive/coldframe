@@ -15,13 +15,13 @@ The same command runs on a laptop and in CI, so a failure is always
 reproducible:
 
 ```bash
-pybootstrap check
+coldframe check
 ```
 
 Add `-v` to include warnings, `--gate lint` to run one gate, and `--fix` to
 apply the corrections tools can make on their own.
 
-Each gate can also be run directly, because pybootstrap does not wrap or
+Each gate can also be run directly, because coldframe does not wrap or
 reconfigure them:
 
 ```bash
@@ -53,5 +53,5 @@ pyproject.toml        dependencies, tool settings and gate definition
 ```
 
 There is no separate build description. Dependencies live where pip already
-looks, tool settings live in each tool's own table, and `[tool.pybootstrap]`
+looks, tool settings live in each tool's own table, and `[tool.coldframe]`
 adds only the list of gates.

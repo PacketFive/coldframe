@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import json
 
-from pybootstrap.config import Config
-from pybootstrap.gates.base import Completed, missing_tool, run_tool, skipped
-from pybootstrap.model import Finding, GateResult, Outcome
+from coldframe.config import Config
+from coldframe.gates.base import Completed, missing_tool, run_tool, skipped
+from coldframe.model import Finding, GateResult, Outcome
 
 PYRIGHT_INSTALL_HINT = "pip install pyright"
 

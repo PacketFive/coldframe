@@ -1,4 +1,4 @@
-# pybootstrap
+# coldframe
 
 Project scaffolding and quality gates that run the same way on a laptop and on a
 build agent.
@@ -6,9 +6,9 @@ build agent.
 ```bash
 pip install -e ".[dev]"
 
-pybootstrap new my-service    # scaffold a project
-pybootstrap check             # run every gate
-pybootstrap fix               # apply what can be applied automatically
+coldframe new my-service    # scaffold a project
+coldframe check             # run every gate
+coldframe fix               # apply what can be applied automatically
 ```
 
 ## The problem it solves
@@ -33,7 +33,7 @@ later step that publishes test results, so the check must not abort the job. The
 mistake is that the mechanism cannot tell "the tool found nothing wrong" from
 "the tool never ran".
 
-pybootstrap keeps those two answers apart everywhere.
+coldframe keeps those two answers apart everywhere.
 
 ## Three outcomes
 
@@ -48,7 +48,7 @@ Exit 2 outranks exit 1. If a run reports both, the failures may be an artefact
 of the broken gate, so the exit code points at the cause rather than the
 symptom.
 
-JUnit XML already draws the same distinction, and pybootstrap uses it: `FAILED`
+JUnit XML already draws the same distinction, and coldframe uses it: `FAILED`
 becomes `<failure>`, `ERRORED` becomes `<error>`. Both render red in Azure
 Pipelines and GitHub Actions, so a gate that could not run stays visible instead
 of disappearing.
@@ -58,7 +58,7 @@ of disappearing.
 One file, the one that is already there.
 
 ```toml
-[tool.pybootstrap]
+[tool.coldframe]
 gates = ["format", "lint", "typecheck", "test"]
 coverage-min = 80
 ```
@@ -67,7 +67,7 @@ That is the whole of it. There is no `BUILD` file, no lockfile of its own, and
 no second description of the project to drift out of step with the first.
 Dependencies stay in `[project]` where pip and Poetry already look, and each
 tool keeps its own table untouched, so `ruff check src` typed by hand behaves
-exactly as it does under `pybootstrap check`.
+exactly as it does under `coldframe check`.
 
 Settings already stated elsewhere are read rather than asked for again:
 
@@ -93,11 +93,11 @@ connection failure is reported as `ERRORED` rather than as a vulnerability.
 
 ## In CI
 
-`pybootstrap check --junit-dir .quality` writes one `junit-<gate>.xml` per gate.
+`coldframe check --junit-dir .quality` writes one `junit-<gate>.xml` per gate.
 Publish them and gate on the publish step:
 
 ```yaml
-- script: pybootstrap check --junit-dir .quality
+- script: coldframe check --junit-dir .quality
   continueOnError: true
 
 - task: PublishTestResults@2
@@ -113,34 +113,35 @@ publish step exactly as a real failure does.
 `--format github` emits `::error file=...,line=...` annotations instead, so
 findings appear inline on a pull request.
 
-`pybootstrap new --ci azure` or `--ci github` writes a working pipeline.
+`coldframe new --ci azure` or `--ci github` writes a working pipeline.
 
 ## Commands
 
 | Command | Does |
 |---|---|
-| `pybootstrap check` | run the configured gates |
-| `pybootstrap check --gate lint` | run one gate |
-| `pybootstrap fix` | `ruff format` and `ruff check --fix` |
-| `pybootstrap new NAME` | scaffold a project |
-| `pybootstrap info` | show what would run and where the settings came from |
-| `pybootstrap gates` | list every available gate |
+| `coldframe check` | run the configured gates |
+| `coldframe check --gate lint` | run one gate |
+| `coldframe fix` | `ruff format` and `ruff check --fix` |
+| `coldframe new NAME` | scaffold a project |
+| `coldframe info` | show what would run and where the settings came from |
+| `coldframe gates` | list every available gate |
 
 ## Requirements
 
-Python 3.10 or newer. pybootstrap has no runtime dependencies beyond `tomli` on
+Python 3.10 or newer. coldframe has no runtime dependencies beyond `tomli` on
 3.10, where `tomllib` is not yet in the standard library. A tool that needed its
 own dependency tree resolved before it could bootstrap a project would be
 arguing against its own premise.
 
-The gates need the tools they drive. `pip install "pybootstrap[gates]"` brings
+The gates need the tools they drive. `pip install "coldframe[gates]"` brings
 in ruff, pyright and pytest, or a project can pin its own versions and
-pybootstrap will use those.
+coldframe will use those.
 
-## A note on the name
+## The name
 
-The name `pybootstrap` is taken on PyPI by a placeholder uploaded in 2017, at
-version 0.1, with the summary "A random test lib" and no description. The import
-name and the console script used here are unaffected. Publishing under this name
-would need a PEP 541 name-reuse request; `pybootstrapper` and `pybstrap` are
-both free if that request is refused.
+A cold frame is a glazed box in a garden that shelters young plants until they
+are strong enough to go outside. coldframe does the same for a new project: it
+starts it with `coldframe new` and keeps it behind the same gates locally and in
+CI. It was called pybootstrap during development; that name belongs to another
+project on PyPI.
+

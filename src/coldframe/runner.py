@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 
-from pybootstrap import gates as registry
-from pybootstrap.config import Config
-from pybootstrap.model import GateResult, Outcome, RunReport
+from coldframe import gates as registry
+from coldframe.config import Config
+from coldframe.model import GateResult, Outcome, RunReport
 
 ProgressHook = Callable[[str], None]
 

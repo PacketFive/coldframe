@@ -1,6 +1,6 @@
 # Codebase Quality and Compliance (CQC)
 #
-# Every check runs through one command, `pybootstrap check`, which is the same
+# Every check runs through one command, `coldframe check`, which is the same
 # command a developer runs locally. A CI-only invocation is a CI-only failure
 # mode, and those are the expensive ones to debug.
 #
@@ -64,12 +64,12 @@ stages:
           # that while still marking the step, which `|| true` hides entirely.
           - script: |
               set -uo pipefail
-              pybootstrap check \
+              coldframe check \
                 --junit-dir "$(junitDir)" \
                 --format github \
                 ${{ parameters.gates }}
-              echo "pybootstrap exit code: $?"
-            displayName: "Run pybootstrap check"
+              echo "coldframe exit code: $?"
+            displayName: "Run coldframe check"
             continueOnError: true
 
           # Gating happens here rather than on the exit code above, so the Tests

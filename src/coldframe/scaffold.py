@@ -2,12 +2,12 @@
 
 Templates are plain files carrying ``{{ name }}`` placeholders, rendered by
 straight string substitution. There is no template engine and no dependency on
-one, which keeps pybootstrap installable anywhere without dragging a tree of
+one, which keeps coldframe installable anywhere without dragging a tree of
 packages into the environment it is meant to be bootstrapping.
 
 The generated project is an ordinary Python project. It has a ``pyproject.toml``
 that pip and Poetry both understand, a ``src`` layout, a test directory and tool
-configuration in the standard tables. Someone who has never heard of pybootstrap
+configuration in the standard tables. Someone who has never heard of coldframe
 can clone it and run ``ruff check src`` or ``pytest`` and get exactly what they
 expect. The tool adds a gate definition, not a parallel universe.
 """
