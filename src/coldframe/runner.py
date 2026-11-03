@@ -47,9 +47,7 @@ def run(
         result = GateResult(
             name=name,
             outcome=Outcome.ERRORED,
-            detail=(
-                f"unknown gate '{name}'. Available: " f"{', '.join(sorted(registry.REGISTRY))}"
-            ),
+            detail=(f"unknown gate '{name}'. Available: {', '.join(sorted(registry.REGISTRY))}"),
         )
         report.results.append(result)
         if on_finish:

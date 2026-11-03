@@ -48,6 +48,23 @@ class TestFormatGate:
         assert result.outcome is Outcome.FAILED
         assert [f.path for f in result.findings] == ["src/app/main.py", "src/app/util.py"]
 
+    def test_ruff_017_diagnostics_become_findings(self) -> None:
+        stdout = (
+            "unformatted: File would be reformatted\n"
+            "   --> src/app/main.py:240:11\n"
+            "    |\n"
+            "240 +     print('x')\n"
+            "    |\n"
+            "\n"
+            "unformatted: File would be reformatted\n"
+            "  --> src/app/util.py:50:21\n"
+            "   |\n"
+            "2 files would be reformatted, 18 files already formatted\n"
+        )
+        result = FormatGate()._interpret(completed(1, stdout))
+        assert result.outcome is Outcome.FAILED
+        assert [f.path for f in result.findings] == ["src/app/main.py", "src/app/util.py"]
+
     def test_rejected_argument_errors_rather_than_failing(self) -> None:
         """The bug this gate exists for.
 

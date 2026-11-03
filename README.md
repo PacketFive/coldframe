@@ -4,9 +4,11 @@ Project scaffolding and quality gates that run the same way on a laptop and on a
 build agent.
 
 ```bash
-pip install -e ".[dev]"
+pip install "coldframe[gates]"
 
 coldframe new my-service    # scaffold a project
+cd my-service
+pip install -e ".[dev]"
 coldframe check             # run every gate
 coldframe fix               # apply what can be applied automatically
 ```
@@ -142,6 +144,15 @@ coldframe will use those.
 A cold frame is a glazed box in a garden that shelters young plants until they
 are strong enough to go outside. coldframe does the same for a new project: it
 starts it with `coldframe new` and keeps it behind the same gates locally and in
-CI. It was called pybootstrap during development; that name belongs to another
-project on PyPI.
+CI.
+
+It was called pybootstrap during development; that name belongs to another
+project on PyPI. Projects from that time keep working unchanged. The
+`pybootstrap` command is still installed, a `[tool.pybootstrap]` table is read
+when there is no `[tool.coldframe]` table, and `PYBOOTSTRAP_FORCE_COLOR` is
+honoured alongside `COLDFRAME_FORCE_COLOR`.
+
+## License
+
+Apache License 2.0. See [LICENSE](https://github.com/PacketFive/coldframe/blob/main/LICENSE).
 

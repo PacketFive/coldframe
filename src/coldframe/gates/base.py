@@ -53,12 +53,12 @@ def run_tool(
             launched=False,
         )
     try:
-        # S603/S607 are suppressed on the argument line rather than the call
-        # line because ruff anchors both diagnostics to the first argument. The
+        # S603/S607 are suppressed on both the call and the argument line because
+        # ruff versions disagree about where the diagnostic is anchored. The
         # argv here is assembled by this module from configuration, never from a
         # shell string, and the tool name is looked up on PATH on purpose so a
         # virtualenv copy wins over a system one.
-        proc = subprocess.run(
+        proc = subprocess.run(  # noqa: S603
             argv,  # noqa: S603
             cwd=cwd,
             capture_output=True,

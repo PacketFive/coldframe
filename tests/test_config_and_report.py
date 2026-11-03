@@ -71,6 +71,23 @@ class TestConfig:
         assert config.gates == ["lint"]
         assert config.coverage_min == 95.0
 
+    def test_former_table_name_is_read(self, tmp_path) -> None:
+        root = write_project(
+            tmp_path,
+            '[project]\nname = "demo"\n[tool.pybootstrap]\ngates = ["lint"]\ncoverage-min = 90\n',
+        )
+        config = load(root)
+        assert config.gates == ["lint"]
+        assert config.coverage_min == 90.0
+
+    def test_current_table_name_wins_over_former(self, tmp_path) -> None:
+        root = write_project(
+            tmp_path,
+            '[project]\nname = "demo"\n'
+            '[tool.coldframe]\ngates = ["test"]\n[tool.pybootstrap]\ngates = ["lint"]\n',
+        )
+        assert load(root).gates == ["test"]
+
     def test_poetry_projects_are_understood(self, tmp_path) -> None:
         root = write_project(tmp_path, '[tool.poetry]\nname = "legacy-app"\n')
         assert load(root).project_name == "legacy-app"

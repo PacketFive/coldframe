@@ -240,8 +240,7 @@ def generate(
 
     if destination.exists() and any(destination.iterdir()) and not force:
         raise ScaffoldError(
-            f"{destination} already exists and is not empty. "
-            "Pass --force to write into it anyway."
+            f"{destination} already exists and is not empty. Pass --force to write into it anyway."
         )
 
     substitutions = spec.as_substitutions()

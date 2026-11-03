@@ -237,14 +237,14 @@ def cmd_new(args: argparse.Namespace) -> int:
         )
         print("  initialised a git repository")
 
-    print("\nNext:\n" f"  cd {destination}\n" '  pip install -e ".[dev]"\n' "  coldframe check")
+    print(f'\nNext:\n  cd {destination}\n  pip install -e ".[dev]"\n  coldframe check')
     return 0
 
 
 def _git_config(key: str) -> str:
     if shutil.which("git") is None:
         return ""
-    completed = subprocess.run(
+    completed = subprocess.run(  # noqa: S603, S607
         ["git", "config", "--get", key],  # noqa: S603, S607
         capture_output=True,
         text=True,

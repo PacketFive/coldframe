@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,13 +8,23 @@ version = "0.1.0"
 description = "Project scaffolding and quality gates that run the same way locally and in CI."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 keywords = ["scaffolding", "quality", "ci", "lint", "junit"]
 classifiers = [
   "Development Status :: 3 - Alpha",
+  "Environment :: Console",
   "Intended Audience :: Developers",
+  "Operating System :: POSIX :: Linux",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Build Tools",
   "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
 ]
 
 # No runtime dependencies, on purpose. coldframe is installed into the
@@ -52,7 +62,10 @@ coldframe = "coldframe.cli:main"
 pybootstrap = "coldframe.cli:main"
 
 [project.urls]
-Source = "https://github.com/packetfive/coldframe"
+Homepage = "https://github.com/PacketFive/coldframe"
+Source = "https://github.com/PacketFive/coldframe"
+Issues = "https://github.com/PacketFive/coldframe/issues"
+Changelog = "https://github.com/PacketFive/coldframe/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]

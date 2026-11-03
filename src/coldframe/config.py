@@ -98,12 +98,12 @@ def find_project_root(start: Path | None = None) -> Path | None:
     return None
 
 
-def _as_str_list(value: Any, key: str) -> list[str]:
+def _as_str_list(value: Any, key: str, where: str = "[tool.coldframe]") -> list[str]:
     if isinstance(value, str):
         return [value]
     if isinstance(value, list) and all(isinstance(v, str) for v in value):
         return list(value)
-    raise ConfigError(f"[tool.coldframe] {key} must be a string or a list of strings")
+    raise ConfigError(f"{where} {key} must be a string or a list of strings")
 
 
 def load(root: Path | None = None) -> Config:
@@ -210,35 +210,43 @@ def _apply_inferred(cfg: Config, data: dict[str, Any]) -> None:
 
 
 def _apply_explicit(cfg: Config, data: dict[str, Any]) -> None:
-    """Apply ``[tool.coldframe]``, which wins over anything inferred."""
-    table = data.get("tool", {}).get("coldframe")
+    """Apply ``[tool.coldframe]``, which wins over anything inferred.
+
+    Projects created under the tool's former name carry ``[tool.pybootstrap]``
+    instead. That table is read when ``[tool.coldframe]`` is absent, so they
+    keep working unchanged.
+    """
+    tools = data.get("tool", {})
+    name = "coldframe" if "coldframe" in tools else "pybootstrap"
+    table = tools.get(name)
     if table is None:
         return
+    where = f"[tool.{name}]"
     if not isinstance(table, dict):
-        raise ConfigError("[tool.coldframe] must be a table")
+        raise ConfigError(f"{where} must be a table")
 
     if "source" in table:
-        cfg.source_dirs = _as_str_list(table["source"], "source")
+        cfg.source_dirs = _as_str_list(table["source"], "source", where)
     if "tests" in table:
-        cfg.test_dirs = _as_str_list(table["tests"], "tests")
+        cfg.test_dirs = _as_str_list(table["tests"], "tests", where)
     if "gates" in table:
-        cfg.gates = _as_str_list(table["gates"], "gates")
+        cfg.gates = _as_str_list(table["gates"], "gates", where)
     if "suite-prefix" in table:
         prefix = table["suite-prefix"]
         if not isinstance(prefix, str):
-            raise ConfigError("[tool.coldframe] suite-prefix must be a string")
+            raise ConfigError(f"{where} suite-prefix must be a string")
         cfg.suite_prefix = prefix
     if "coverage-min" in table:
         value = table["coverage-min"]
         if not isinstance(value, int | float) or isinstance(value, bool):
-            raise ConfigError("[tool.coldframe] coverage-min must be a number")
+            raise ConfigError(f"{where} coverage-min must be a number")
         if not 0 <= float(value) <= 100:
-            raise ConfigError("[tool.coldframe] coverage-min must be between 0 and 100")
+            raise ConfigError(f"{where} coverage-min must be between 0 and 100")
         cfg.coverage_min = float(value)
     if "coverage-package" in table:
         package = table["coverage-package"]
         if not isinstance(package, str):
-            raise ConfigError("[tool.coldframe] coverage-package must be a string")
+            raise ConfigError(f"{where} coverage-package must be a string")
         cfg.coverage_package = package
 
     for key, value in table.items():

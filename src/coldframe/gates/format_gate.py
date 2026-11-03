@@ -19,11 +19,14 @@ and it is not a checker that failed either.
 
 from __future__ import annotations
 
+import re
+
 from coldframe.config import Config
 from coldframe.gates.base import Completed, missing_tool, run_tool, skipped
 from coldframe.model import Finding, GateResult, Outcome
 
 RUFF_INSTALL_HINT = "pip install ruff"
+_LOCATION = re.compile(r":\d+:\d+$")
 
 
 class FormatGate:
@@ -62,7 +65,7 @@ class FormatGate:
                     outcome=Outcome.ERRORED,
                     detail=(
                         "ruff format exited 1 but produced no recognisable "
-                        f"'Would reformat:' lines. Raw output: {completed.output[:400]}"
+                        f"file names. Raw output: {completed.output[:400]}"
                     ),
                     duration_s=completed.duration_s,
                     command=completed.argv,
@@ -90,17 +93,27 @@ class FormatGate:
 def _parse_would_reformat(stdout: str) -> list[Finding]:
     """Pull paths out of ruff's plain check output.
 
-    The format is one ``Would reformat: <path>`` line per file, then a summary
-    line. Plain text is chosen over JSON deliberately: it is what every ruff
-    version emits for this subcommand, so the gate does not break on upgrade.
+    Older ruff prints one ``Would reformat: <path>`` line per file. Ruff 0.17
+    and later print an ``unformatted:`` diagnostic per file instead, with the
+    location on a following ``--> <path>:<line>:<col>`` line. Both shapes are
+    accepted, so the gate keeps working across the upgrade.
     """
     findings: list[Finding] = []
+    seen: set[str] = set()
+    in_diagnostic = False
     for raw in stdout.splitlines():
         line = raw.strip()
-        if not line.startswith("Would reformat:"):
+        path = ""
+        if line.startswith("Would reformat:"):
+            path = line.split(":", 1)[1].strip()
+        elif line.startswith("unformatted:"):
+            in_diagnostic = True
             continue
-        path = line.split(":", 1)[1].strip()
-        if path:
+        elif in_diagnostic and line.startswith("-->"):
+            in_diagnostic = False
+            path = _LOCATION.sub("", line[3:].strip())
+        if path and path not in seen:
+            seen.add(path)
             findings.append(
                 Finding(
                     path=path,
